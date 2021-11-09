@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, abort
 from models import Player, database
 import json
 from playhouse.shortcuts import model_to_dict, dict_to_model
@@ -9,12 +9,18 @@ database.connect()
 def to_json(player):
     return json.dumps(model_to_dict(player), indent=4, sort_keys=True, default=str)
 
-@app.route("/player", methods=['POST'])
+@app.route("/player", methods=['POST', 'GET'])
 @app.route("/player/<player_id>", methods=['GET', 'PUT', 'DELETE'])
 def player(player_id=None):
     if request.method == 'GET':
-        player = Player.get_by_id(player_id)
-        return to_json(player)
+        if player_id:
+            try:
+                player = Player.get_by_id(player_id)
+            except:
+                abort(404)
+            return to_json(player)
+        else:
+            return str([to_json(p) for p in Player.select()])
 
     elif request.method == 'POST':
         player = Player.create(
