@@ -43,5 +43,6 @@ def player(player_id=None):
         return to_json(player)
 
     elif request.method == 'DELETE':
-        pass
+        Player.get_by_id(player_id).delete_instance()
+        return '', 204
 
