@@ -20,7 +20,13 @@ def player(player_id=None):
                 abort(404)
             return to_json(player)
         else:
-            return str([to_json(p) for p in Player.select()])
+            s = '['
+            for p in Player.select():
+                s += to_json(p) + ','
+            if s[-1] == ',':
+                s = s[:-1]
+            s += ']'
+            return s
 
     elif request.method == 'POST':
         player = Player.create(
