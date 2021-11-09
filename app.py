@@ -34,9 +34,12 @@ def player(player_id=None):
         return to_json(player)
 
     elif request.method == 'PUT':
-        player_dict = model_to_dict(Player.get_by_id(player_id))
-        fields = list(player_dict.keys())
-        fields.remove('player_id')
+        try:
+            player_dict = model_to_dict(Player.get_by_id(player_id))
+            fields = list(player_dict.keys())
+            fields.remove('player_id')
+        except:
+            abort(404)
 
         for field in request.form.keys():
             if field in fields:
@@ -49,6 +52,9 @@ def player(player_id=None):
         return to_json(player)
 
     elif request.method == 'DELETE':
-        Player.get_by_id(player_id).delete_instance()
+        try:
+            Player.get_by_id(player_id).delete_instance()
+        except:
+            abort(404)
         return '', 204
 
