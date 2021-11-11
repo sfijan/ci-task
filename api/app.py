@@ -13,13 +13,13 @@ def to_json(player):
 @app.route("/player/<player_id>", methods=['GET', 'PUT', 'DELETE'])
 def player(player_id=None):
     if request.method == 'GET':
-        if player_id:
+        if player_id:       #send a single specific player
             try:
                 player = Player.get_by_id(player_id)
             except:
                 abort(404)
             return to_json(player)
-        else:
+        else:               #send all the players
             s = '['
             for p in Player.select():
                 s += to_json(p) + ','
